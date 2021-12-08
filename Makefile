@@ -1,12 +1,16 @@
 NAME	=	philo
 
-INCL	=	./includes
+INCL	=	includes
 
-SRCS	=	srcs/main.c
+OBJ_DIR	=	.obj
 
-OBJS	=	$(SRCS:.c=.o)
+SRCS_DIR=	srcs
 
-CFLAGS	=	-g -Wall -Werror -Wextra -I $(INCL)
+SRCS	=	$(SRCS_DIR)/main.c	$(SRCS_DIR)/ft_split.c	$(SRCS_DIR)/utils.c
+
+OBJS	= 	$(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
+
+CFLAGS	=	-g -pthread -Wall -Werror -Wextra -I $(INCL)
 
 RM		=	rm -rf
 
@@ -16,21 +20,21 @@ HEADER	=	$(INCL)/philo.h
 
 .PHONY: all clean fclean re
 
-%.o:	%.c $(HEADER)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJ_DIR)/%.o:%.c $(HEADER)
+	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)/$(SRCS_DIR)
+	@$(CC) -c $(CFLAGS) $< -o $@
 
 all:	$(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(LIB):	libft/*.c	includes/libft.h
-	make -C libft
 
 clean:
-			$(RM) $(OBJS)
+			@$(RM) $(OBJ_DIR)
 
 fclean:		clean
-			$(RM) $(NAME)
+			@$(RM) $(NAME)
 
 re:			fclean all
