@@ -41,9 +41,16 @@ int	count_dblstr(s_struct *gen, int argc, char **argv)
 	return (a);
 }
 
-void	*routine()
+void*	routine(void *mutex)
 {
-	printf("Thread!\n");
+	int a;
+	a = -1;
+	while (++a < 20000000)
+	{
+		pthread_mutex_lock(mutex);
+		abc++;
+		pthread_mutex_unlock(mutex);
+	}
 	return (NULL);
 }
 
@@ -54,6 +61,7 @@ int main(int argc, char **argv)
 	long int b;
 
 	gen.flag = 0;
+	abc = 0;
 	a = count_dblstr(&gen, argc, argv);
 	if ((argc == 2 && a != 5) || (argc != 6 && !a))
 	{
@@ -66,18 +74,25 @@ int main(int argc, char **argv)
 		printf("Error: not valid amount of threads\n");
 		return (2);
 	}
-	pthread_t th[b];
+	pthread_t	th[b];
+	pthread_mutex_t mutex;
 
+	pthread_mutex_init(&mutex, NULL);
 	a = -1;
 	while (++a < b)
 	{
-		if (pthread_create(&th[a], NULL, routine, NULL) != 0)
+		if (pthread_create(&th[a], NULL, routine, &mutex) != 0)
 			return 1;
+		usleep(500);
 	}
 	a = -1;
 	while (++a < b)
+	{
 		if (pthread_join(th[a], NULL) != 0)
 			return 2;
+	}
+	pthread_mutex_destroy(&mutex);
+	printf("*** hi %d\n", abc);
 	if (gen.flag)
 		if_flag(&gen);
 	return (0);

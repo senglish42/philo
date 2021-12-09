@@ -10,6 +10,8 @@
 # include <sys/types.h>
 # include <signal.h>
 
+int abc;
+
 typedef struct t_struct
 {
 	int		argc;
