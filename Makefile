@@ -6,7 +6,8 @@ OBJ_DIR	=	.obj
 
 SRCS_DIR=	srcs
 
-SRCS	=	$(SRCS_DIR)/main.c	$(SRCS_DIR)/ft_split.c	$(SRCS_DIR)/utils.c
+SRCS	=	$(SRCS_DIR)/main.c		$(SRCS_DIR)/ft_split.c	$(SRCS_DIR)/utils.c\
+			$(SRCS_DIR)/threads.c	$(SRCS_DIR)/lists.c		$(SRCS_DIR)/error.c\
 
 OBJS	= 	$(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
 

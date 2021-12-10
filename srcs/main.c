@@ -1,6 +1,6 @@
 #include "philo.h"
 
-void if_flag(s_struct *gen)
+void free_data(t_struct *gen)
 {
 	int	a;
 
@@ -12,7 +12,7 @@ void if_flag(s_struct *gen)
 	}
 }
 
-int	count_dblstr(s_struct *gen, int argc, char **argv)
+int	count_dblstr(t_struct *gen, int argc, char **argv)
 {
 	char	**splt;
 	int		a;
@@ -54,46 +54,35 @@ void*	routine(void *mutex)
 	return (NULL);
 }
 
+int look_for_threads(t_all	*all, int argc, char **argv)
+{
+	int	a;
+
+	all->gen.flag = 0;
+	abc = 0;
+	a = count_dblstr(&all->gen, argc, argv);
+	if ((argc == 2 && a != 5) || (argc != 6 && !a))
+		return (error(all, "Error: invalid amount of argc\n", 1));
+	all->num_of_philo = ft_atoi(all->gen.argv[0]);
+	if (all->num_of_philo <= 0 || all->num_of_philo > 200)
+		return (error(all, "Error: not valid amount of threads\n", 2));
+	all->philo = (t_philo *)malloc(sizeof(t_philo) * all->num_of_philo);
+	all->philo = NULL;
+	phils_to_list(all->philo, all->philo->next);
+	return (init_treads(all));
+}
+
 int main(int argc, char **argv)
 {
-	s_struct gen;
-	int	a;
-	long int b;
+	t_all	all;
+	int 	rv;
 
-	gen.flag = 0;
-	abc = 0;
-	a = count_dblstr(&gen, argc, argv);
-	if ((argc == 2 && a != 5) || (argc != 6 && !a))
-	{
-		printf("Error: invalid amount of argc\n");
-		return (1);
-	}
-	b = ft_atoi(gen.argv[0]);
-	if (b <= 0 || b > 200)
-	{
-		printf("Error: not valid amount of threads\n");
-		return (2);
-	}
-	pthread_t	th[b];
-	pthread_mutex_t mutex;
+	rv = look_for_threads(&all, argc, argv);
+	if (rv)
+		return (rv);
 
-	pthread_mutex_init(&mutex, NULL);
-	a = -1;
-	while (++a < b)
-	{
-		if (pthread_create(&th[a], NULL, routine, &mutex) != 0)
-			return 1;
-		usleep(500);
-	}
-	a = -1;
-	while (++a < b)
-	{
-		if (pthread_join(th[a], NULL) != 0)
-			return 2;
-	}
-	pthread_mutex_destroy(&mutex);
 	printf("*** hi %d\n", abc);
-	if (gen.flag)
-		if_flag(&gen);
+	if (all.gen.flag)
+		free_data(&all.gen);
 	return (0);
 }

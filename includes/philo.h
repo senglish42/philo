@@ -12,12 +12,31 @@
 
 int abc;
 
-typedef struct t_struct
+typedef struct s_struct
 {
-	int		argc;
-	char	**argv;
-	int 	flag;
-}	s_struct;
+	int			argc;
+	char		**argv;
+	int 		flag;
+}	t_struct;
+
+typedef struct s_philo
+{
+	int				num;
+	int				deadline;
+	int				eatline;
+	int				sleepline;
+	int				eatrow;
+	struct s_philo	*next;
+}	t_philo;
+
+typedef struct s_all
+{
+	t_struct		gen;
+	t_philo			*philo;
+	long int		num_of_philo;
+	pthread_mutex_t	life;
+	pthread_mutex_t	death;
+}	t_all;
 
 //	utils.c	//
 size_t		ft_strlen(const char *str);
@@ -34,8 +53,21 @@ int		ft_strcount(char const *s, char c);
 char	**ft_freenavalniy(char **res, int elem);
 
 //	main.c	//
+void	free_data(t_struct *gen);
 int		main(int argc, char **argv);
-int		count_dblstr(s_struct *gen, int argc, char **argv);
+int		count_dblstr(t_struct *gen, int argc, char **argv);
+int	look_for_threads(t_all	*all, int argc, char **argv);
 void	*routine();
+
+//	threads.c	//
+int init_treads(t_all	*all);
+
+//	error.c	//
+int error(t_all *all, char *str, int num);
+
+//	lists.c	//
+void	phils_to_list(t_philo **philo, t_philo *new);
+t_philo	*ft_lstlast(t_philo *philo);
+t_philo	*ft_lstnew(t_all *all, int num);
 
 #endif
