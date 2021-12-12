@@ -17,6 +17,7 @@ typedef struct s_struct
 	int			argc;
 	char		**argv;
 	int 		flag;
+	int			arr[5];
 }	t_struct;
 
 typedef struct s_philo
@@ -69,5 +70,6 @@ int error(t_all *all, char *str, int num);
 void	phils_to_list(t_philo **philo, t_philo *new);
 t_philo	*ft_lstlast(t_philo *philo);
 t_philo	*ft_lstnew(t_all *all, int num);
+void	ft_lstclear(t_philo **philo);
 
 #endif

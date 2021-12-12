@@ -32,8 +32,8 @@ int	count_dblstr(t_struct *gen, int argc, char **argv)
 			while (a > ++b)
 				gen->argv[b] = splt[b];
 			gen->argv[b] = NULL;
+			gen->flag = 1;
 		}
-		gen->flag = 1;
 		free(splt);
 	}
 	else
@@ -59,16 +59,28 @@ int look_for_threads(t_all	*all, int argc, char **argv)
 	int	a;
 
 	all->gen.flag = 0;
-	abc = 0;
 	a = count_dblstr(&all->gen, argc, argv);
 	if ((argc == 2 && a != 5) || (argc != 6 && !a))
 		return (error(all, "Error: invalid amount of argc\n", 1));
-	all->num_of_philo = ft_atoi(all->gen.argv[0]);
-	if (all->num_of_philo <= 0 || all->num_of_philo > 200)
-		return (error(all, "Error: not valid amount of threads\n", 2));
-	all->philo = (t_philo *)malloc(sizeof(t_philo) * all->num_of_philo);
-	all->philo = NULL;
-	phils_to_list(all->philo, all->philo->next);
+	a = -1;
+	while (++a < 5)
+	{
+		all->gen.arr[a] = ft_atoi(all->gen.argv[a]);
+		if (all->gen.arr[a] <= 0 || all->gen.arr[0] > 200)
+			return (error(all, "Error: not valid amount of threads\n", 2));
+	}
+	all->num_of_philo = all->gen.arr[0];
+	t_philo *philo[all->num_of_philo];
+
+	a = -1;
+	while (++a < all->num_of_philo)
+	{
+		philo[a] = ft_lstnew(all, a);
+		if (!philo[a])
+			return (error(all, "Error: impossible to create a new list\n", 3));
+		philo[a]->next = NULL;
+		phils_to_list(&all->philo, philo[a]);
+	}
 	return (init_treads(all));
 }
 
@@ -77,10 +89,10 @@ int main(int argc, char **argv)
 	t_all	all;
 	int 	rv;
 
+	all.philo = NULL;
 	rv = look_for_threads(&all, argc, argv);
 	if (rv)
 		return (rv);
-
 	printf("*** hi %d\n", abc);
 	if (all.gen.flag)
 		free_data(&all.gen);
