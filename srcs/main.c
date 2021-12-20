@@ -26,12 +26,18 @@ int	count_dblstr(t_struct *gen, int argc, char **argv)
 		splt = ft_split(gen->argv[1], 32);
 		while (splt[a])
 			a++;
-		if (a == 5)
+		if (a == 4 || a == 5)
 		{
 			b = -1;
 			while (a > ++b)
 				gen->argv[b] = splt[b];
-			gen->argv[b] = NULL;
+			if (a == 4)
+			{
+				gen->argv[b] = 0;
+				gen->argv[b + 1] = NULL;
+			}
+			else
+				gen->argv[b] = NULL;
 			gen->flag = 1;
 		}
 		free(splt);
@@ -57,17 +63,23 @@ void*	routine(void *mutex)
 int look_for_threads(t_all	*all, int argc, char **argv)
 {
 	int	a;
+	int b;
 
 	all->gen.flag = 0;
 	a = count_dblstr(&all->gen, argc, argv);
-	if ((argc == 2 && a != 5) || (argc != 6 && !a))
+	if ((argc == 2 && (a != 4 && a != 5)) || ((argc != 5 && argc != 6) && !a))
 		return (error(all, "Error: invalid amount of argc\n", 1));
-	a = -1;
-	while (++a < 5)
+	b = -1;
+	while (++b < 5)
 	{
-		all->gen.arr[a] = ft_atoi(all->gen.argv[a]);
-		if (all->gen.arr[a] <= 0 || all->gen.arr[0] > 200)
-			return (error(all, "Error: not valid amount of threads\n", 2));
+		if ((a && b == a) || b == argc - 1)
+			all->gen.arr[b] = 0;
+		else
+		{
+			all->gen.arr[b] = ft_atoi(all->gen.argv[b]);
+			if (all->gen.arr[b] <= 0 || all->gen.arr[0] > 200)
+				return (error(all, "Error: not valid amount of threads\n", 2));
+		}
 	}
 	all->num_of_philo = all->gen.arr[0];
 	t_philo *philo[all->num_of_philo];
