@@ -33,7 +33,7 @@ $(NAME): $(OBJS)
 
 
 clean:
-			@$(RM) $(OBJ_DIR)
+			@ $(RM) $(OBJ_DIR)
 
 fclean:		clean
 			@$(RM) $(NAME)

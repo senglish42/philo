@@ -1,5 +1,15 @@
 #include "philo.h"
 
+void	ft_lstadd_back(t_philo **lst, t_philo *new)
+{
+    t_philo	*temp;
+
+    if (!new)
+        return ;
+    temp = ft_lstlast(*lst);
+    temp->next = new;
+}
+
 void	phils_to_list(t_philo **philo, t_philo *new)
 {
 	t_philo	*phils;

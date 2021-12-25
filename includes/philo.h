@@ -32,6 +32,7 @@ typedef struct s_philo
 
 typedef struct s_all
 {
+    int             a;
 	t_struct		gen;
 	t_philo			*philo;
 	long int		num_of_philo;
@@ -54,19 +55,21 @@ int		ft_strcount(char const *s, char c);
 char	**ft_freenavalniy(char **res, int elem);
 
 //	main.c	//
+void	ft_rotate(t_philo **philo);
 void	free_data(t_struct *gen);
 int		main(int argc, char **argv);
 int		count_dblstr(t_struct *gen, int argc, char **argv);
-int	look_for_threads(t_all	*all, int argc, char **argv);
 void	*routine();
 
 //	threads.c	//
+int look_for_threads(t_all	*all, int argc, char **argv);
 int init_treads(t_all	*all);
 
 //	error.c	//
 int error(t_all *all, char *str, int num);
 
 //	lists.c	//
+void	ft_lstadd_back(t_philo **lst, t_philo *new);
 void	phils_to_list(t_philo **philo, t_philo *new);
 t_philo	*ft_lstlast(t_philo *philo);
 t_philo	*ft_lstnew(t_all *all, int num);
