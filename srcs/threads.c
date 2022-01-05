@@ -39,9 +39,18 @@ int look_for_threads(t_all	*all, int argc, char **argv)
 int init_treads(t_all	*all)
 {
 	pthread_t	th[all->num_of_philo];
-	//int			all->a;
 
-    pthread_mutex_init(&all->life, NULL);
+	all->a = -1;
+	all->forks = malloc(sizeof(pthread_mutex_t) * all->num_of_philo);
+	if (!all->forks)
+		return (error(all, "Error: cannot allocate memory\n", 6));
+	while (++all->a < all->num_of_philo)
+	{
+		if (pthread_mutex_init(&all->forks[all->a], NULL))
+			return (error(all, "Error: cannot initialize mutex\n", 5));
+	}
+	if (pthread_mutex_init(&all->forks[all->a], NULL))
+		return (error(all, "Error: cannot initialize mutex\n", 5));
 	all->a = -1;
 	while (++all->a < all->num_of_philo)
 	{
@@ -54,6 +63,9 @@ int init_treads(t_all	*all)
 		if (pthread_join(th[all->a], NULL) != 0)
 			return (error(all, "Error: cannot join thread\n", 4));
 	}
-	pthread_mutex_destroy(&all->life);
+	all->a = -1;
+	while (++all->a < all->num_of_philo)
+		pthread_mutex_destroy(&all->forks[all->a]);
+	free(all->forks);
 	return (0);
 }

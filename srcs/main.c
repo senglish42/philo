@@ -70,11 +70,11 @@ void*	routine(void *all)
 	a = -1;
     while (++a < 2)
 	{
-        pthread_mutex_lock(&new->life);
+        pthread_mutex_lock(&new->forks[new->a]);
         printf("Philo #%d has taken a fork\n", new->a);
         printf("Philo #%d is eating %d\n", new->a, a);
 		abc++;
-		pthread_mutex_unlock(&new->life);
+		pthread_mutex_unlock(&new->forks[new->a]);
     }
     //ft_rotate(&new->philo);
     return (all);

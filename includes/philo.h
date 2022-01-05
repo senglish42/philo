@@ -36,7 +36,7 @@ typedef struct s_all
 	t_struct		gen;
 	t_philo			*philo;
 	long int		num_of_philo;
-	pthread_mutex_t	life;
+	pthread_mutex_t	*forks;
 	pthread_mutex_t	death;
 }	t_all;
 
