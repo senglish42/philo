@@ -12,30 +12,43 @@
 
 int abc;
 
+enum possible_states
+{
+	eating, thinking, sleeping
+};
+
 typedef struct s_struct
 {
 	int			argc;
 	char		**argv;
 	int 		flag;
 	int			arr[5];
+	int 		errno;
 }	t_struct;
 
-typedef struct s_philo
-{
-	int				num;
-	int				deadline;
-	int				eatline;
-	int				sleepline;
-	int				eatrow;
-	struct s_philo	*next;
-}	t_philo;
+//typedef struct s_philo
+//{
+//	int				num;
+//	int				deadline;
+//	int				eatline;
+//	int				sleepline;
+//	int				eatrow;
+//	struct s_philo	*next;
+//}	t_philo;
 
 typedef struct s_all
 {
     int             a;
-	t_struct		gen;
-	t_philo			*philo;
-	long int		num_of_philo;
+    int				deadline;
+    int				eatline;
+    int				sleepline;
+    int				eatrow;
+    int 			flag;
+    int 			ate_cnt;
+    long 			last_meal;
+	short			num_of_philo;
+	int				*state;
+	pthread_t 		th;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	death;
 }	t_all;
@@ -55,24 +68,24 @@ int		ft_strcount(char const *s, char c);
 char	**ft_freenavalniy(char **res, int elem);
 
 //	main.c	//
-void	ft_rotate(t_philo **philo);
+int init_struct(t_all **philo, t_struct	*gen);
+int		parse_cmdline(t_struct	*gen, int argc, char **argv);
 void	free_data(t_struct *gen);
 int		main(int argc, char **argv);
 int		count_dblstr(t_struct *gen, int argc, char **argv);
-void	*routine();
 
 //	threads.c	//
-int look_for_threads(t_all	*all, int argc, char **argv);
-int init_treads(t_all	*all);
+void	*routine();
+int init_threads(t_all	*all, t_struct	*gen);
 
 //	error.c	//
-int error(t_all *all, char *str, int num);
+int error(t_struct	*gen, char *str, int num);
 
-//	lists.c	//
-void	ft_lstadd_back(t_philo **lst, t_philo *new);
-void	phils_to_list(t_philo **philo, t_philo *new);
-t_philo	*ft_lstlast(t_philo *philo);
-t_philo	*ft_lstnew(t_all *all, int num);
-void	ft_lstclear(t_philo **philo);
+////	lists.c	//
+//void	ft_lstadd_back(t_philo **lst, t_philo *new);
+//void	phils_to_list(t_philo **philo, t_philo *new);
+//t_philo	*ft_lstlast(t_philo *philo);
+//t_philo	*ft_lstnew(t_all *all, int num);
+//void	ft_lstclear(t_philo **philo);
 
 #endif

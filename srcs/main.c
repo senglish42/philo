@@ -47,50 +47,55 @@ int	count_dblstr(t_struct *gen, int argc, char **argv)
 	return (a);
 }
 
-void	ft_rotate(t_philo **philo)
+int parse_cmdline(t_struct *gen, int argc, char **argv)
 {
-    t_philo	*philo1;
-    t_philo	*philo2;
+	int			a;
+	int			b;
 
-    if (!*philo || !(*philo)->next)
-        return ;
-    philo1 = *philo;
-    philo2 = philo1->next;
-    philo1->next = NULL;
-    ft_lstadd_back(&philo2, philo1);
-    *philo = philo2;
+	gen->errno = 0;
+	gen->flag = 0;
+	a = count_dblstr(gen, argc, argv);
+	if ((argc == 2 && (a != 4 && a != 5)) || ((argc != 5 && argc != 6) && !a))
+		return (error(gen, "Error: invalid amount of argc\n", 1));
+	b = -1;
+	while (++b < 5)
+	{
+		if ((a && b == a) || b == argc - 1)
+			gen->arr[b] = 0;
+		else
+		{
+			gen->arr[b] = ft_atoi(gen->argv[b]);
+			if (gen->arr[b] <= 0 || gen->arr[0] > 200)
+				return (error(gen, "Error: not valid amount of threads\n", 2));
+		}
+	}
+	return (0);
 }
 
-void*	routine(void *all)
+int init_struct(t_all **philo, t_struct	*gen)
 {
-	t_all *new;
-
-    new = all;
-    int a;
-	a = -1;
-    while (++a < 2)
-	{
-        pthread_mutex_lock(&new->forks[new->a]);
-        printf("Philo #%d has taken a fork\n", new->a);
-        printf("Philo #%d is eating %d\n", new->a, a);
-		abc++;
-		pthread_mutex_unlock(&new->forks[new->a]);
-    }
-    //ft_rotate(&new->philo);
-    return (all);
+	(*philo) = malloc(sizeof(t_all) * gen->arr[0]);
+	if (!(*philo))
+		return (error(gen, "Error: memory cannot be allocated\n", 7));
+	(*philo)->num_of_philo = (short)gen->arr[0];
+	(*philo)->deadline = gen->arr[1];
+	(*philo)->eatline = gen->arr[2];
+	(*philo)->sleepline = gen->arr[3];
+	(*philo)->eatrow = gen->arr[4];
+	return (0);
 }
 
 int main(int argc, char **argv)
 {
-	t_all	all;
-	int 	rv;
+	t_all		*philo;
+	t_struct	gen;
 
-	all.philo = NULL;
-	rv = look_for_threads(&all, argc, argv);
-	if (rv)
-		return (rv);
+	philo = NULL;
+	if (parse_cmdline(&gen, argc, argv) || init_struct(&philo, &gen))
+		return (gen.errno);
+	init_threads(philo, &gen);
 	printf("*** hi %d\n", abc);
-	if (all.gen.flag)
-		free_data(&all.gen);
+	if (gen.flag)
+		free_data(&gen);
 	return (0);
 }

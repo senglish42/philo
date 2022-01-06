@@ -1,11 +1,10 @@
 #include "philo.h"
 
-int error(t_all *all, char *str, int num)
+int error(t_struct	*gen, char *str, int num)
 {
-	if (all->philo)
-		ft_lstclear(&all->philo);
-	if (all->gen.flag)
-		free_data(&all->gen);
+	gen->errno = num;
+	if (gen->flag)
+		free_data(gen);
 	printf("%s", str);
-	return (num);
+	return(gen->errno);
 }
