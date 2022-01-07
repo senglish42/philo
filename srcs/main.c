@@ -93,7 +93,6 @@ int main(int argc, char **argv)
 	if (!philo)
 		return (error(&gen, "Error: memory cannot be allocated\n", 7));
 	init_threads(philo, &gen);
-	printf("*** hi %d\n", abc);
 	if (gen.flag)
 		free_data(&gen);
 	return (0);

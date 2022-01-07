@@ -10,8 +10,6 @@
 # include <sys/types.h>
 # include <signal.h>
 
-int abc;
-
 enum possible_states
 {
 	eating, thinking, sleeping
@@ -25,6 +23,7 @@ typedef struct s_struct
 	int				arr[5];
 	int 			errno;
 	pthread_mutex_t	*forks;
+	int				*state;
 }	t_struct;
 
 //typedef struct s_philo
@@ -48,7 +47,7 @@ typedef struct s_all
     int 			ate_cnt;
     long 			last_meal;
 	short			num_of_philo;
-	int				*state;
+	int 			*state;
 	pthread_t 		th;
 	pthread_mutex_t	death;
 	pthread_mutex_t	*forks;
