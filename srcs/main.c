@@ -72,27 +72,26 @@ int parse_cmdline(t_struct *gen, int argc, char **argv)
 	return (0);
 }
 
-int init_struct(t_all **philo, t_struct	*gen)
-{
-	(*philo) = malloc(sizeof(t_all) * gen->arr[0]);
-	if (!(*philo))
-		return (error(gen, "Error: memory cannot be allocated\n", 7));
-	(*philo)->num_of_philo = (short)gen->arr[0];
-	(*philo)->deadline = gen->arr[1];
-	(*philo)->eatline = gen->arr[2];
-	(*philo)->sleepline = gen->arr[3];
-	(*philo)->eatrow = gen->arr[4];
-	return (0);
-}
+//int init_struct(t_all **philo, t_struct	*gen)
+//{
+//	(*philo)->num_of_philo = (short)gen->arr[0];
+//	(*philo)->deadline = gen->arr[1];
+//	(*philo)->eatline = gen->arr[2];
+//	(*philo)->sleepline = gen->arr[3];
+//	(*philo)->eatrow = gen->arr[4];
+//	return (0);
+//}
 
 int main(int argc, char **argv)
 {
 	t_all		*philo;
 	t_struct	gen;
 
-	philo = NULL;
-	if (parse_cmdline(&gen, argc, argv) || init_struct(&philo, &gen))
+	if (parse_cmdline(&gen, argc, argv))
 		return (gen.errno);
+	philo = malloc(sizeof(t_all) * gen.arr[0]);
+	if (!philo)
+		return (error(&gen, "Error: memory cannot be allocated\n", 7));
 	init_threads(philo, &gen);
 	printf("*** hi %d\n", abc);
 	if (gen.flag)

@@ -19,11 +19,12 @@ enum possible_states
 
 typedef struct s_struct
 {
-	int			argc;
-	char		**argv;
-	int 		flag;
-	int			arr[5];
-	int 		errno;
+	int				argc;
+	char			**argv;
+	int 			flag;
+	int				arr[5];
+	int 			errno;
+	pthread_mutex_t	*forks;
 }	t_struct;
 
 //typedef struct s_philo
@@ -49,8 +50,8 @@ typedef struct s_all
 	short			num_of_philo;
 	int				*state;
 	pthread_t 		th;
-	pthread_mutex_t	*forks;
 	pthread_mutex_t	death;
+	pthread_mutex_t	*forks;
 }	t_all;
 
 //	utils.c	//
@@ -68,7 +69,7 @@ int		ft_strcount(char const *s, char c);
 char	**ft_freenavalniy(char **res, int elem);
 
 //	main.c	//
-int init_struct(t_all **philo, t_struct	*gen);
+int		init_struct(t_all **philo, t_struct	*gen);
 int		parse_cmdline(t_struct	*gen, int argc, char **argv);
 void	free_data(t_struct *gen);
 int		main(int argc, char **argv);
@@ -76,7 +77,7 @@ int		count_dblstr(t_struct *gen, int argc, char **argv);
 
 //	threads.c	//
 void	*routine();
-int init_threads(t_all	*all, t_struct	*gen);
+int		init_threads(t_all	*all, t_struct	*gen);
 
 //	error.c	//
 int error(t_struct	*gen, char *str, int num);
