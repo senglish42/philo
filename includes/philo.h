@@ -20,11 +20,11 @@ typedef struct s_struct
 	int				argc;
 	char			**argv;
 	int 			flag;
-	int				arr[5];
+	long			arr[5];
 	int 			errno;
 	int 			eatcnt;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t death;
+	pthread_t		death;
 	pthread_mutex_t eatrow;
 	int				*state;
 }	t_struct;
@@ -42,19 +42,19 @@ typedef struct s_struct
 typedef struct s_all
 {
     int             a;
-//    long			deadline;
-//    long			eatline;
-//    long			sleepline;
+    long			deadline;
+    long			eatline;
+    long			sleepline;
 //    int				eatrow;
-	int 			*arr;
+	long 			*arr;
     int 			*flag;
     int 			ate_cnt;
     long 			last_meal;
-	int				num_of_philo;
+	short			num_of_philo;
 	int 			*state;
 	int 			*eatcnt;
 	pthread_t 		th;
-	pthread_mutex_t	*death;
+	//pthread_t		death;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t *eatrow;
 }	t_all;
