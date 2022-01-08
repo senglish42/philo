@@ -54,6 +54,7 @@ int parse_cmdline(t_struct *gen, int argc, char **argv)
 
 	gen->errno = 0;
 	gen->flag = 0;
+	gen->eatcnt = 0;
 	a = count_dblstr(gen, argc, argv);
 	if ((argc == 2 && (a != 4 && a != 5)) || ((argc != 5 && argc != 6) && !a))
 		return (error(gen, "Error: invalid amount of argc\n", 1));
@@ -65,7 +66,7 @@ int parse_cmdline(t_struct *gen, int argc, char **argv)
 		else
 		{
 			gen->arr[b] = ft_atoi(gen->argv[b]);
-			if (gen->arr[b] <= 0 || gen->arr[0] > 200)
+			if (gen->arr[b] < 0 || gen->arr[0] > 200)
 				return (error(gen, "Error: not valid amount of threads\n", 2));
 		}
 	}
