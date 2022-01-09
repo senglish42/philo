@@ -53,6 +53,7 @@ typedef struct s_all
 	short			num_of_philo;
 	int 			*state;
 	int 			*eatcnt;
+	int				detach;
 	pthread_t 		th;
 	//pthread_t		death;
 	pthread_mutex_t	*forks;
