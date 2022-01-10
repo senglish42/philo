@@ -21,51 +21,22 @@ void*	trick_or_treat(void *all)
 
 	new = (t_all *)all;
 	gettimeofday(&start, NULL);
-//	pthread_mutex_unlock(new->death);
 	a = 0;
 	while (!new->detach)
 	{
 		count = -1;
 		while (++count < new->num_of_philo)
 		{
-		//	printf("***%d %d\n", (int)new[count].a, new[count]
-		//	.state[new[count].a - 1]);
 			if (new[count].state[new[count].a - 1] != thinking)
-			{
 				continue;
-			}
 			ct = cur_time(&start) * 1e-3;
 			if (ct && ct == new[count].deadline)
 			{
-				printf("***%ld %ld %d %d %d\n", ct, new[count].deadline,
-					   (int)new[count].a, new[count].state[new[count].a - 1],
-					   a);
-//				printf("***%ld %ld %d %d\n", ct, new[0].deadline,
-//					   (int)new[count].a, (*new).state[new->a - 1]);
-//				printf("***%ld %ld %d %d\n", ct, new[1].deadline,
-//					   (int)new[count].a, (*new).state[new->a - 1]);
-//				printf("***%ld %ld %d %d\n", ct, new[2].deadline,
-//					   (int)new[count].a, (*new).state[new->a - 1]);
-//				printf("***%ld %ld %d %d\n", ct, new[3].deadline,
-//					   (int)new[count].a, (*new).state[new->a - 1]);
-//				printf("***%ld %ld %d %d\n", ct, new[4].deadline,
-//					   (int)new[count].a, (*new).state[new->a - 1]);
+				printf("%.3ld philo #%d died %ld\n", ct, (int)new[count].a,
+					   (new + count)->deadline);
 				exit(0);
 			}
-//			if (ct == new[count].deadline)
-//			printf("philo *** %d has %ld\n", new[count].a, new[count].deadline);
-//			if (ct == new[count].a * 1000)
-//			{
-//				printf("%ld philo #%d is dead XXXXXXXXX\n", ct, new[count].a);
-//				new->detach = 1;
-//				break;
-//			}
 		}
-//		ct = cur_time(&start) * 1e-3;
-//		if (ct < new->arr[1])
-//		{
-//
-//		}
 	}
 	return (all);
 }
@@ -81,75 +52,49 @@ void*	routine(void *all)
 	count = 0;
     new = (t_all *) all;
     gettimeofday(&start, NULL);
-//    pthread_mutex_unlock(new->death);
-    printf("hi from the philo #%d\n", new->a);
     if (new->a % 2 == 0)
-        usleep(100);
-	if (!new->arr[4])
-		*new->eatcnt = 1;
+        usleep(10000);
+//	if (!new->arr[4])
+//		*new->eatcnt = 1;
 	a = 0;
-    while (new->state[new->a - 1] == thinking && *new->eatcnt != new->arr[4])
+	while ((*new).state[new->a - 1] == thinking/* && *new->eatcnt !=
+ * new->arr[4]*/)
     {
-//    	ct = cur_time(&start) * 1e-3;
-//    	if (ct > new->deadline * 1000)
-//    	{
-//    		printf("%ld philo #%d is dead XXXXXXXXX\n", ct, new->a);
-//    		pthread_mutex_lock(new->death);
-//    		return (all);
-//    	}
-    	pthread_mutex_lock(&new->forks[(new->a - 1) % new->arr[0]]);
-        printf("%.3f philo #%d has taken the left fork\n", cur_time(&start) *
+    	pthread_mutex_lock(&new->forks[(*new).a - 1 % new->arr[0]]);
+        printf("%.3f philo #%d has taken the right fork\n", cur_time(&start) *
         1e-3, new->a);
-        pthread_mutex_lock(&new->forks[new->a % new->arr[0]]);
-        printf("%.3f philo #%d has taken the right fork\n", cur_time(&start)
+        pthread_mutex_lock(&new->forks[(*new).a % new->arr[0]]);
+        printf("%.3f philo #%d has taken the left fork\n", cur_time(&start)
         * 1e-3, new->a);
-//        ct = cur_time(&start) * 1e-3;
-//        printf("%.3f philo #%d LOOOOOOOVE %f\n", (float)ct, new->a, (float)
-//        new->deadline - ct);
-//        if (new->deadline - ct < 0)
-//        {
-//        	printf("%.3f philo #%d is dead XXXXXXXXX\n", (float)ct, new->a);
-//        	pthread_mutex_lock(new->death);
-//        	return (all);
-//        }
-      //  new->state[new->a - 1] = eating;
-		(*new).deadline = (*new).deadline + (*new).eatline;
-		(*new).state[new->a - 1] = eating;
+        (*new).deadline = (*new).deadline + new->arr[1];
+	//	(*new).deadline = (*new).deadline + (*new).eatline;
+		(*new).state[(*new).a - 1] = eating;
 		printf("%.3f philo #%d is eating\n", cur_time(&start) * 1e-3, new->a);
         usleep(new->eatline * 1000);
-        pthread_mutex_unlock(&new->forks[new->a % new->arr[0]]);
-        printf("%.3f philo #%d put the right fork\n", cur_time(&start) *
-        1e-3, new->a);
         pthread_mutex_unlock(&new->forks[(new->a - 1) % new->arr[0]]);
-        printf("%.3f philo #%d put the left fork\n", cur_time(&start) * 1e-3,
+        printf("%.3f philo #%d put the right fork\n", cur_time(&start) * 1e-3,
 			   new->a);
+        pthread_mutex_unlock(&new->forks[new->a % new->arr[0]]);
+        printf("%.3f philo #%d put the left fork\n", cur_time(&start) *
+        1e-3, new->a);
 		(*new).state[new->a - 1] = sleeping;
-		(*new).deadline = (*new).deadline + (*new).sleepline;
-		//	new->state[new->a - 1] = sleeping;
+	//	(*new).deadline = (*new).deadline + (*new).sleepline;
         printf("%.3f philo #%d is sleeping\n", cur_time(&start) * 1e-3,
 			   new->a);
         usleep(new->sleepline * 1000);
-//        new->state[new->a - 1] = thinking;
-//        printf("%.3f philo #%d is thinking\n", cur_time(&start) * 1e-3,
-//			   new->a);
-//		(*new).deadline = (*new).deadline + (*new).eatline +
-//				(*new).sleepline;
 		if (new->arr[4])
 		{
 			if (++count == new->arr[4])
 			{
 				pthread_mutex_lock((*new).eatrow);
 				*new->eatcnt = *new->eatcnt + 1;
-			//	printf("%d new->eatcnt\n", *new->eatcnt);
+				printf("%d new->eatcnt %ld\n", *new->eatcnt, (*new).deadline);
 				pthread_mutex_unlock((*new).eatrow);
+				if (*new->eatcnt == new->arr[0])
+					exit (0);
 			}
 		}
 		(*new).state[new->a - 1] = thinking;
-	//	new->state[new->a - 1] = thinking;
-		printf("****%.3f philo #%d %d is thinking\n", cur_time(&start) * 1e-3,
-			   new->a, ++a);
-//		(*new).deadline = (*new).deadline + (*new).eatline +
-//						  (*new).sleepline;
     }
     return (all);
 }
