@@ -26,6 +26,7 @@ typedef struct s_struct
 	pthread_mutex_t	*forks;
 	pthread_t		death;
 	pthread_mutex_t eatrow;
+	int 			detach;
 	int				*state;
 }	t_struct;
 
@@ -88,11 +89,9 @@ int		init_threads(t_all	*all, t_struct	*gen);
 //	error.c	//
 int error(t_struct	*gen, char *str, int num);
 
-////	lists.c	//
-//void	ft_lstadd_back(t_philo **lst, t_philo *new);
-//void	phils_to_list(t_philo **philo, t_philo *new);
-//t_philo	*ft_lstlast(t_philo *philo);
-//t_philo	*ft_lstnew(t_all *all, int num);
-//void	ft_lstclear(t_philo **philo);
+//	time.c	//
+//long    cur_time(struct timeval *start);
+long    get_time(void);
+//int		delay(long sleep);
 
 #endif

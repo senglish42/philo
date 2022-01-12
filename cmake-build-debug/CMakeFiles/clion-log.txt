@@ -1,1 +1,1 @@
-CMakeLists.txt not found in /Users/senglish/philo3 Select CMakeLists.txt
+CMakeLists.txt not found in /Users/senglish/philosophers Select CMakeLists.txt
