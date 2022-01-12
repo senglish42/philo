@@ -54,7 +54,6 @@ void*	routine(void *all)
 {
     t_all			*new;
     struct timeval	start;
-	struct timeval	delay;
     int 			count;
 
 	count = 0;
@@ -73,8 +72,7 @@ void*	routine(void *all)
         (*new).deadline = (*new).deadline + new->arr[1];
 		(*new).state[(*new).a - 1] = eating;
 		printf("%.f philo #%d is eating\n", cur_time(&start) * 1e-3, new->a);
-		gettimeofday(&delay, NULL);
-		while (cur_time(&delay) * 1e-3 <= new->eatline)
+		usleep(new->sleepline * 1000);
 		pthread_mutex_unlock(&new->forks[(new->a - 1) % new->arr[0]]);
 		printf("%.f philo #%d put the right fork\n", cur_time(&start) * 1e-3,
 				   new->a);
@@ -84,8 +82,7 @@ void*	routine(void *all)
 		(*new).state[new->a - 1] = sleeping;
         printf("%.f philo #%d is sleeping\n", cur_time(&start) * 1e-3,
 			   new->a);
-		gettimeofday(&delay, NULL);
-		while (cur_time(&delay) * 1e-3 <= new->eatline)
+		usleep(new->eatline * 1000);
 		(*new).state[new->a - 1] = thinking;
 		if (new->arr[4])
 		{
