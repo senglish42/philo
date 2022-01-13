@@ -16,12 +16,13 @@ void*	trick_or_treat(void *all)
 		{
 			if (*new->eatcnt == (int)(*new).arr[0])
 				return (all);
-			if (new[count].state[new[count].a - 1] != thinking)
+			if (new[count].state != thinking)
 				continue;
 			ct = cur_time(&start) * 1e-3;
 			if (ct && ct >= new[count].deadline)
 			{
 				pthread_mutex_lock((*new).eatrow);
+				(*new).state = died;
 				printf("%ld philo #%d died %ld %d\n", ct, (int)new[count].a,
 					   (new + count)->deadline, count);
 				pthread_mutex_unlock((*new).eatrow);
@@ -44,6 +45,32 @@ int	must_eat(t_all *new, int count)
 	return (count);
 }
 
+void	eat(t_all *new, struct timeval *start)
+{
+	(*new).state = eating;
+	(*new).deadline = (*new).deadline + new->arr[1];
+	printf("%.f philo #%d is eating\n", cur_time(start) * 1e-3, new->a);
+	usleep(new->eatline * 1000);
+	pthread_mutex_unlock(&new->forks[(new->a - 1) % new->arr[0]]);
+	pthread_mutex_unlock(&new->forks[new->a % new->arr[0]]);
+}
+
+void 	take_forks(t_all *new, struct timeval *start)
+{
+	pthread_mutex_lock(&new->forks[(*new).a - 1 % new->arr[0]]);
+	printf("%.f philo #%d has taken a fork\n", cur_time(start) *
+											   1e-3, new->a);
+	pthread_mutex_lock(&new->forks[(*new).a % new->arr[0]]);
+	printf("%.f philo #%d has taken a fork\n", cur_time(start)
+											   * 1e-3, new->a);
+}
+
+void	think(t_all *new, struct timeval *start)
+{
+	(*new).state = thinking;
+	printf("%.f philo #%d is thinking\n", cur_time(start) * 1e-3, new->a);
+}
+
 void*	routine(void *all)
 {
     t_all			*new;
@@ -55,36 +82,36 @@ void*	routine(void *all)
     gettimeofday(&start, NULL);
     if (new->a % 2)
 		usleep(10000);
-	while ((*new).state[new->a - 1] == thinking)
+	while ((*new).state != died)
     {
-		printf("%.f philo #%d is thinking\n", cur_time(&start) * 1e-3, new->a);
-    	pthread_mutex_lock(&new->forks[(*new).a - 1 % new->arr[0]]);
-        printf("%.f philo #%d has taken a fork\n", cur_time(&start) *
-        1e-3, new->a);
-        pthread_mutex_lock(&new->forks[(*new).a % new->arr[0]]);
-        printf("%.f philo #%d has taken a fork\n", cur_time(&start)
-        * 1e-3, new->a);
-        (*new).deadline = (*new).deadline + new->arr[1];
-		(*new).state[(*new).a - 1] = eating;
-		printf("%.f philo #%d is eating\n", cur_time(&start) * 1e-3, new->a);
-		usleep(new->sleepline * 1000);
-		pthread_mutex_unlock(&new->forks[(new->a - 1) % new->arr[0]]);
-		pthread_mutex_unlock(&new->forks[new->a % new->arr[0]]);
-		if (new->arr[4])
+		if ((*new).state != died)
+			think(new, &start);
+		if ((*new).state != died)
+			take_forks(new, &start);
+		if ((*new).state != died)
+			eat(new, &start);
+//		(*new).state = thinking;
+//		printf("%.f philo #%d is thinking\n", cur_time(&start) * 1e-3, new->a);
+//    	pthread_mutex_lock(&new->forks[(*new).a - 1 % new->arr[0]]);
+//        printf("%.f philo #%d has taken a fork\n", cur_time(&start) *
+//        1e-3, new->a);
+//        pthread_mutex_lock(&new->forks[(*new).a % new->arr[0]]);
+//        printf("%.f philo #%d has taken a fork\n", cur_time(&start)
+//        * 1e-3, new->a);
+//		(*new).state = eating;
+//		(*new).deadline = (*new).deadline + new->arr[1];
+//		printf("%.f philo #%d is eating\n", cur_time(&start) * 1e-3, new->a);
+//		usleep(new->sleepline * 1000);
+//		pthread_mutex_unlock(&new->forks[(new->a - 1) % new->arr[0]]);
+//		pthread_mutex_unlock(&new->forks[new->a % new->arr[0]]);
+		if ((*new).state != died && new->arr[4])
 			count = must_eat(new, count);
-		(*new).state[new->a - 1] = sleeping;
+		(*new).state = sleeping;
         printf("%.f philo #%d is sleeping\n", cur_time(&start) * 1e-3,
 			   new->a);
-		usleep(new->eatline * 1000);
-		(*new).state[new->a - 1] = thinking;
+		usleep(new->sleepline * 1000);
     }
-    return (new);
-}
-
-void fill_enum(t_struct *gen, int count)
-{
-	while (++count < gen->arr[0])
-		gen->state[count] = thinking;
+	return (new);
 }
 
 int others(t_struct	*gen)
@@ -101,7 +128,6 @@ int create_threads(t_all *all, t_struct	*gen)
 	int count;
 
 	count = -1;
-	fill_enum(gen, count);
 	while (++count < gen->arr[0])
 	{
 		all[count].a = count + 1;
@@ -111,7 +137,6 @@ int create_threads(t_all *all, t_struct	*gen)
 		all[count].eatline = gen->arr[2];
 		all[count].sleepline = gen->arr[3];
 		all[count].forks = gen->forks;
-		all[count].state = gen->state;
 		all[count].eatrow = &gen->eatrow;
 		all[count].eatcnt = &gen->eatcnt;
 		if (pthread_create(&all[count].th, NULL, routine, &all[count]))

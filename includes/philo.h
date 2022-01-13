@@ -12,7 +12,7 @@
 
 enum e_states
 {
-	eating, thinking, sleeping
+	eating, thinking, sleeping, died
 };
 
 typedef struct s_struct
@@ -41,7 +41,7 @@ typedef struct s_all
     int 			ate_cnt;
     long 			last_meal;
 	short			num_of_philo;
-	int 			*state;
+	int 			state;
 	int 			*eatcnt;
 	int				detach;
 	pthread_t 		th;
@@ -73,12 +73,15 @@ int		main(int argc, char **argv);
 int		count_dblstr(t_struct *gen, int argc, char **argv);
 
 //	threads.c	//
+void	think(t_all *new, struct timeval *start);
 void	*routine();
 int		init_mutex(t_struct	*gen);
+void 	take_forks(t_all *new, struct timeval *start);
+void 	eat(t_all *new, struct timeval *start);
 int 	create_threads(t_all *all, t_struct	*gen);
 int 	others(t_struct	*gen);
 int		must_eat(t_all *new, int count);
-void 	fill_enum(t_struct *gen, int count);
+//void 	fill_enum(t_struct *gen, int count);
 
 //	error.c	//
 int 	error(t_struct	*gen, char *str, int num);
