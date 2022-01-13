@@ -88,7 +88,13 @@ int main(int argc, char **argv)
 		return (gen.errno);
 	if (memory_allocate(&philo, &gen))
 		return (gen.errno);
-	init_threads(philo, &gen);
+	if (init_mutex(&gen))
+		return (gen.errno);
+	if (create_threads(philo, &gen))
+		return (gen.errno);
+	if (others(&gen))
+		return (gen.errno);
+//	init_threads(philo, &gen);
 	free(philo);
 	return (0);
 }

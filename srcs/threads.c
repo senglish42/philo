@@ -32,6 +32,18 @@ void*	trick_or_treat(void *all)
 	return (all);
 }
 
+int	must_eat(t_all *new, int count)
+{
+	if (++count == new->arr[4])
+	{
+		pthread_mutex_lock((*new).eatrow);
+		*new->eatcnt = *new->eatcnt + 1;
+		printf("%d new->eatcnt %ld\n", *new->eatcnt, (*new).deadline);
+		pthread_mutex_unlock((*new).eatrow);
+	}
+	return (count);
+}
+
 void*	routine(void *all)
 {
     t_all			*new;
@@ -45,58 +57,51 @@ void*	routine(void *all)
 		usleep(10000);
 	while ((*new).state[new->a - 1] == thinking)
     {
+		printf("%.f philo #%d is thinking\n", cur_time(&start) * 1e-3, new->a);
     	pthread_mutex_lock(&new->forks[(*new).a - 1 % new->arr[0]]);
-        printf("%.f philo #%d has taken the right fork\n", cur_time(&start) *
+        printf("%.f philo #%d has taken a fork\n", cur_time(&start) *
         1e-3, new->a);
         pthread_mutex_lock(&new->forks[(*new).a % new->arr[0]]);
-        printf("%.f philo #%d has taken the left fork\n", cur_time(&start)
+        printf("%.f philo #%d has taken a fork\n", cur_time(&start)
         * 1e-3, new->a);
         (*new).deadline = (*new).deadline + new->arr[1];
 		(*new).state[(*new).a - 1] = eating;
 		printf("%.f philo #%d is eating\n", cur_time(&start) * 1e-3, new->a);
 		usleep(new->sleepline * 1000);
 		pthread_mutex_unlock(&new->forks[(new->a - 1) % new->arr[0]]);
-		printf("%.f philo #%d put the right fork\n", cur_time(&start) * 1e-3,
-				   new->a);
 		pthread_mutex_unlock(&new->forks[new->a % new->arr[0]]);
-		printf("%.f philo #%d put the left fork\n", cur_time(&start) *
-														1e-3, new->a);
+		if (new->arr[4])
+			count = must_eat(new, count);
 		(*new).state[new->a - 1] = sleeping;
         printf("%.f philo #%d is sleeping\n", cur_time(&start) * 1e-3,
 			   new->a);
 		usleep(new->eatline * 1000);
 		(*new).state[new->a - 1] = thinking;
-		if (new->arr[4])
-		{
-			if (++count == new->arr[4])
-			{
-				pthread_mutex_lock((*new).eatrow);
-				*new->eatcnt = *new->eatcnt + 1;
-				printf("%d new->eatcnt %ld\n", *new->eatcnt, (*new).deadline);
-				pthread_mutex_unlock((*new).eatrow);
-			}
-		}
     }
     return (new);
 }
 
-int init_threads(t_all	*all, t_struct	*gen)
+void fill_enum(t_struct *gen, int count)
+{
+	while (++count < gen->arr[0])
+		gen->state[count] = thinking;
+}
+
+int others(t_struct	*gen)
+{
+	if (pthread_join(gen->death, NULL) != 0)
+		return (error(gen, "Error: cannot join thread\n", 4));
+	free(gen->state);
+	free(gen->forks);
+	return (0);
+}
+
+int create_threads(t_all *all, t_struct	*gen)
 {
 	int count;
 
 	count = -1;
-	while (++count < gen->arr[0])
-		gen->state[count] = thinking;
-	count = -1;
-	while (++count < gen->arr[0])
-	{
-		if (pthread_mutex_init(&gen->forks[count], NULL))
-			return (error(gen, "Error: cannot initialize mutex\n", 5));
-	}
-	if (gen->arr[4] && pthread_mutex_init(&gen->eatrow, NULL))
-		return (error(gen, "Error: cannot initialize mutex\n", 5));
-	gen->eatcnt = 0;
-	count = -1;
+	fill_enum(gen, count);
 	while (++count < gen->arr[0])
 	{
 		all[count].a = count + 1;
@@ -114,9 +119,20 @@ int init_threads(t_all	*all, t_struct	*gen)
 	}
 	if (pthread_create(&gen->death, NULL, trick_or_treat, all))
 		return (error(gen, "Error: cannot create thread\n", 3));
-	if (pthread_join(gen->death, NULL) != 0)
-		return (error(gen, "Error: cannot join thread\n", 4));
-	free(gen->state);
-	free(gen->forks);
+	return (0);
+}
+
+int init_mutex(t_struct	*gen)
+{
+	int count;
+
+	count = -1;
+	while (++count < gen->arr[0])
+	{
+		if (pthread_mutex_init(&gen->forks[count], NULL))
+			return (error(gen, "Error: cannot initialize mutex\n", 5));
+	}
+	if (gen->arr[4] && pthread_mutex_init(&gen->eatrow, NULL))
+		return (error(gen, "Error: cannot initialize mutex\n", 5));
 	return (0);
 }

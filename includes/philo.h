@@ -10,7 +10,7 @@
 # include <sys/types.h>
 # include <signal.h>
 
-enum possible_states
+enum e_states
 {
 	eating, thinking, sleeping
 };
@@ -74,10 +74,14 @@ int		count_dblstr(t_struct *gen, int argc, char **argv);
 
 //	threads.c	//
 void	*routine();
-int		init_threads(t_all	*all, t_struct	*gen);
+int		init_mutex(t_struct	*gen);
+int 	create_threads(t_all *all, t_struct	*gen);
+int 	others(t_struct	*gen);
+int		must_eat(t_all *new, int count);
+void 	fill_enum(t_struct *gen, int count);
 
 //	error.c	//
-int error(t_struct	*gen, char *str, int num);
+int 	error(t_struct	*gen, char *str, int num);
 
 //	time.c	//
 long    get_time(void);
