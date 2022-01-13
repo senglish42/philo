@@ -4,12 +4,9 @@ void free_data(t_struct *gen)
 {
 	int	a;
 
-	a = 0;
-	while (gen->argv[a])
-	{
-		printf("here %d\n", a);
-		free(gen->argv[a++]);
-	}
+	a = -1;
+	while (++a < gen->flag)
+		free(gen->argv[a]);
 }
 
 int	count_dblstr(t_struct *gen, int argc, char **argv)
@@ -31,14 +28,8 @@ int	count_dblstr(t_struct *gen, int argc, char **argv)
 			b = -1;
 			while (a > ++b)
 				gen->argv[b] = splt[b];
-			if (a == 4)
-			{
-				gen->argv[b] = 0;
-				gen->argv[b + 1] = NULL;
-			}
-			else
-				gen->argv[b] = NULL;
-			gen->flag = 1;
+			gen->argv[b] = NULL;
+			gen->flag = a;
 		}
 		free(splt);
 	}
@@ -61,14 +52,14 @@ int parse_cmdline(t_struct *gen, int argc, char **argv)
 	b = -1;
 	while (++b < 5)
 	{
-		if ((a && b == a) || b == argc - 1)
-			gen->arr[b] = 0;
-		else
+		if (gen->flag && gen->flag == b)
 		{
-			gen->arr[b] = ft_atoi(gen->argv[b]);
-			if (gen->arr[b] < 0 || gen->arr[0] > 200)
-				return (error(gen, "Error: not valid amount of threads\n", 2));
+			free_data(gen);
+			break ;
 		}
+		gen->arr[b] = ft_atoi(gen->argv[b]);
+		if (gen->arr[b] < 0 || gen->arr[0] > 200)
+			return (error(gen, "Error: not valid amount of threads\n", 2));
 	}
 	return (0);
 }
@@ -84,7 +75,5 @@ int main(int argc, char **argv)
 	if (!philo)
 		return (error(&gen, "Error: memory cannot be allocated\n", 7));
 	init_threads(philo, &gen);
-	if (gen.flag)
-		free_data(&gen);
 	return (0);
 }

@@ -30,23 +30,12 @@ typedef struct s_struct
 	int				*state;
 }	t_struct;
 
-//typedef struct s_philo
-//{
-//	int				num;
-//	int				deadline;
-//	int				eatline;
-//	int				sleepline;
-//	int				eatrow;
-//	struct s_philo	*next;
-//}	t_philo;
-
 typedef struct s_all
 {
     int             a;
     long			deadline;
     long			eatline;
     long			sleepline;
-//    int				eatrow;
 	long 			*arr;
     int 			*flag;
     int 			ate_cnt;
@@ -56,7 +45,6 @@ typedef struct s_all
 	int 			*eatcnt;
 	int				detach;
 	pthread_t 		th;
-	//pthread_t		death;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t *eatrow;
 }	t_all;
@@ -76,6 +64,7 @@ int		ft_strcount(char const *s, char c);
 char	**ft_freenavalniy(char **res, int elem);
 
 //	main.c	//
+int		fill_gen(t_struct *gen);
 int		init_struct(t_all **philo, t_struct	*gen);
 int		parse_cmdline(t_struct	*gen, int argc, char **argv);
 void	free_data(t_struct *gen);
@@ -90,8 +79,6 @@ int		init_threads(t_all	*all, t_struct	*gen);
 int error(t_struct	*gen, char *str, int num);
 
 //	time.c	//
-//long    cur_time(struct timeval *start);
 long    get_time(void);
-//int		delay(long sleep);
 
 #endif

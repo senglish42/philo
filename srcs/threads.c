@@ -14,7 +14,6 @@ void*	trick_or_treat(void *all)
 {
 	t_all			*new;
 	struct timeval	start;
-	//	pthread_mutex_t	*death;
 	int 			count;
 	long			ct;
 	int 			a;
@@ -27,8 +26,8 @@ void*	trick_or_treat(void *all)
 		count = -1;
 		while (++count < new->num_of_philo)
 		{
-//			if ((*new).detach == 1)
-//				return (all);
+			if (*new->eatcnt == (int)(*new).arr[0])
+				return (all);
 			if (new[count].state[new[count].a - 1] != thinking)
 				continue;
 			ct = cur_time(&start) * 1e-3;
@@ -37,16 +36,12 @@ void*	trick_or_treat(void *all)
 				pthread_mutex_lock((*new).eatrow);
 				printf("%ld philo #%d died %ld %d\n", ct, (int)new[count].a,
 					   (new + count)->deadline, count);
-				new[count].detach = 1;
 				a = 1;
 				pthread_mutex_unlock((*new).eatrow);
-//				break ;
 				return (all);
-				//exit(0);
 			}
 		}
 	}
-	printf("bye\n");
 	return (all);
 }
 
@@ -92,12 +87,10 @@ void*	routine(void *all)
 				*new->eatcnt = *new->eatcnt + 1;
 				printf("%d new->eatcnt %ld\n", *new->eatcnt, (*new).deadline);
 				pthread_mutex_unlock((*new).eatrow);
-				if (*new->eatcnt == new->arr[0])
-					return (all);
 			}
 		}
     }
-    return (all);
+    return (new);
 }
 
 int init_threads(t_all	*all, t_struct	*gen)
@@ -119,9 +112,9 @@ int init_threads(t_all	*all, t_struct	*gen)
 	}
 	if (gen->arr[4] && pthread_mutex_init(&gen->eatrow, NULL))
 		return (error(gen, "Error: cannot initialize mutex\n", 5));
-	count = -1;
 	gen->eatcnt = 0;
 	gen->detach = 0;
+	count = -1;
 	while (++count < gen->arr[0])
 	{
 		all[count].detach = 0;
