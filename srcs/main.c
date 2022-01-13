@@ -50,17 +50,31 @@ int parse_cmdline(t_struct *gen, int argc, char **argv)
 	if ((argc == 2 && (a != 4 && a != 5)) || ((argc != 5 && argc != 6) && !a))
 		return (error(gen, "Error: invalid amount of argc\n", 1));
 	b = -1;
-	while (++b < 5)
+	while (gen->argv[++b])
 	{
-		if (gen->flag && gen->flag == b)
-		{
-			free_data(gen);
-			break ;
-		}
 		gen->arr[b] = ft_atoi(gen->argv[b]);
 		if (gen->arr[b] < 0 || gen->arr[0] > 200)
 			return (error(gen, "Error: not valid amount of threads\n", 2));
+		if (gen->flag && gen->flag - 1 == b)
+			free_data(gen);
 	}
+	return (0);
+}
+
+int memory_allocate(t_all	**all, t_struct	*gen)
+{
+	t_all		*philo;
+
+	philo = malloc(sizeof(t_all) * gen->arr[0]);
+	if (!philo)
+		return (error(gen, "Error: memory cannot be allocated\n", 7));
+	gen->state = malloc(sizeof(int *) * gen->arr[0]);
+	if (!gen->state)
+		return (error(gen, "Error: memory cannot be allocated\n", 9));
+	gen->forks = malloc(sizeof(pthread_mutex_t) * gen->arr[0]);
+	if (!gen->forks)
+		return (error(gen, "Error: memory cannot be allocated\n", 6));
+	*all = philo;
 	return (0);
 }
 
@@ -69,11 +83,12 @@ int main(int argc, char **argv)
 	t_all		*philo;
 	t_struct	gen;
 
+	philo = NULL;
 	if (parse_cmdline(&gen, argc, argv))
 		return (gen.errno);
-	philo = malloc(sizeof(t_all) * gen.arr[0]);
-	if (!philo)
-		return (error(&gen, "Error: memory cannot be allocated\n", 7));
+	if (memory_allocate(&philo, &gen))
+		return (gen.errno);
 	init_threads(philo, &gen);
+	free(philo);
 	return (0);
 }

@@ -68,6 +68,7 @@ int		fill_gen(t_struct *gen);
 int		init_struct(t_all **philo, t_struct	*gen);
 int		parse_cmdline(t_struct	*gen, int argc, char **argv);
 void	free_data(t_struct *gen);
+int		memory_allocate(t_all	**all, t_struct	*gen);
 int		main(int argc, char **argv);
 int		count_dblstr(t_struct *gen, int argc, char **argv);
 
@@ -80,5 +81,5 @@ int error(t_struct	*gen, char *str, int num);
 
 //	time.c	//
 long    get_time(void);
-
+long    cur_time(struct timeval *start);
 #endif
