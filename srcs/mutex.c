@@ -1,21 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   mutex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: senglish <senglish@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/14 11:53:19 by senglish          #+#    #+#             */
-/*   Updated: 2022/01/14 11:53:19 by senglish         ###   ########.fr       */
+/*   Created: 2022/01/14 11:53:44 by senglish          #+#    #+#             */
+/*   Updated: 2022/01/14 11:53:44 by senglish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
 
-int error(t_struct	*gen, char *str, int num)
+int init_mutex(t_struct	*gen)
 {
-	gen->errno = num;
-	if (gen->flag)
-		free_data(gen);
-	printf("%s", str);
-	return(gen->errno);
+	int count;
+
+	count = -1;
+	while (++count < gen->arr[0])
+	{
+		if (pthread_mutex_init(&gen->forks[count], NULL))
+			return (error(gen, "Error: cannot initialize mutex\n", 5));
+	}
+	if (gen->arr[4] && pthread_mutex_init(&gen->eatrow, NULL))
+		return (error(gen, "Error: cannot initialize mutex\n", 5));
+	return (0);
 }

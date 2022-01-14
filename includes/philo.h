@@ -49,6 +49,47 @@ typedef struct s_all
 	pthread_mutex_t *eatrow;
 }	t_all;
 
+//	error.c	//
+int 		error(t_struct	*gen, char *str, int num);
+
+//	ft_split.c	//
+char		**ft_split(char const *s, char c);
+int			ft_count(char const *s, char c);
+char		**ft_fillarray(char **res, char const *s, char c);
+int			ft_strcount(char const *s, char c);
+char		**ft_freenavalniy(char **res, int elem);
+
+//	join.c	//
+int 		join(t_struct	*gen);
+
+//	main.c	//
+int			fill_gen(t_struct *gen);
+int			init_struct(t_all **philo, t_struct	*gen);
+int			parse_cmdline(t_struct	*gen, int argc, char **argv);
+void		free_data(t_struct *gen);
+int			memory_allocate(t_all	**all, t_struct	*gen);
+int			main(int argc, char **argv);
+int			count_dblstr(t_struct *gen, int argc, char **argv);
+
+//	mutex.c	//
+int			init_mutex(t_struct	*gen);
+
+//	states.c	//
+void		think(t_all *new, struct timeval *start);
+void		take_forks(t_all *new, struct timeval *start);
+void		eat(t_all *new, struct timeval *start);
+int			must_eat(t_all *new, int count);
+void		rest(t_all *new, struct timeval *start);
+
+//	threads.c	//
+void		*routine();
+int 		create_threads(t_all *all, t_struct	*gen);
+int 		others(t_struct	*gen);
+
+//	time.c	//
+long		get_time(void);
+long    	cur_time(struct timeval *start);
+
 //	utils.c	//
 size_t		ft_strlen(const char *str);
 size_t		ft_strlcpy(char *dst, const char *src, size_t dstsize);
@@ -56,37 +97,4 @@ char 		*ft_strchr(const char *s, int c);
 void 		*ft_memchr(const void *s, int c, size_t n);
 long int	ft_atoi(const char *str);
 
-//	ft_split.c	//
-char	**ft_split(char const *s, char c);
-int		ft_count(char const *s, char c);
-char	**ft_fillarray(char **res, char const *s, char c);
-int		ft_strcount(char const *s, char c);
-char	**ft_freenavalniy(char **res, int elem);
-
-//	main.c	//
-int		fill_gen(t_struct *gen);
-int		init_struct(t_all **philo, t_struct	*gen);
-int		parse_cmdline(t_struct	*gen, int argc, char **argv);
-void	free_data(t_struct *gen);
-int		memory_allocate(t_all	**all, t_struct	*gen);
-int		main(int argc, char **argv);
-int		count_dblstr(t_struct *gen, int argc, char **argv);
-
-//	threads.c	//
-void	think(t_all *new, struct timeval *start);
-void	*routine();
-int		init_mutex(t_struct	*gen);
-void 	take_forks(t_all *new, struct timeval *start);
-void 	eat(t_all *new, struct timeval *start);
-int 	create_threads(t_all *all, t_struct	*gen);
-int 	others(t_struct	*gen);
-int		must_eat(t_all *new, int count);
-//void 	fill_enum(t_struct *gen, int count);
-
-//	error.c	//
-int 	error(t_struct	*gen, char *str, int num);
-
-//	time.c	//
-long    get_time(void);
-long    cur_time(struct timeval *start);
 #endif

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: senglish <senglish@student.21-school.ru>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/14 11:53:41 by senglish          #+#    #+#             */
+/*   Updated: 2022/01/14 11:53:41 by senglish         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "philo.h"
 
 void free_data(t_struct *gen)
@@ -92,9 +103,10 @@ int main(int argc, char **argv)
 		return (gen.errno);
 	if (create_threads(philo, &gen))
 		return (gen.errno);
-	if (others(&gen))
+	if (join(&gen))
 		return (gen.errno);
-//	init_threads(philo, &gen);
 	free(philo);
+	free(gen.state);
+	free(gen.forks);
 	return (0);
 }

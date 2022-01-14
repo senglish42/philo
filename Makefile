@@ -8,6 +8,7 @@ SRCS_DIR=	srcs
 
 SRCS	=	$(SRCS_DIR)/main.c		$(SRCS_DIR)/ft_split.c	$(SRCS_DIR)/utils.c\
 			$(SRCS_DIR)/threads.c	$(SRCS_DIR)/time.c		$(SRCS_DIR)/error.c\
+			$(SRCS_DIR)/states.c	$(SRCS_DIR)/mutex.c		$(SRCS_DIR)/join.c
 
 OBJS	= 	$(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
 
