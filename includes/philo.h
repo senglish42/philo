@@ -6,7 +6,7 @@
 /*   By: senglish <senglish@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 19:45:47 by senglish          #+#    #+#             */
-/*   Updated: 2022/01/14 19:53:04 by senglish         ###   ########.fr       */
+/*   Updated: 2022/01/14 22:44:08 by senglish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ enum e_states
 {
 	eating,
 	thinking,
-	sleeping,
-	died
+	sleeping
 };
 
 typedef struct s_struct
@@ -38,6 +37,7 @@ typedef struct s_struct
 	long			arr[5];
 	int				errno;
 	int				eatcnt;
+	int				dead;
 	pthread_mutex_t	*forks;
 	pthread_t		death;
 	pthread_mutex_t	eatrow;
@@ -47,18 +47,16 @@ typedef struct s_struct
 
 typedef struct s_all
 {
-	int				a;
+	int				num;
 	long			deadline;
 	long			eatline;
 	long			sleepline;
 	long			*arr;
 	int				*flag;
-	int				ate_cnt;
-	long			last_meal;
+	int				*dead;
 	short			num_of_philo;
 	int				state;
 	int				*eatcnt;
-	int				detach;
 	pthread_t		th;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*eatrow;
@@ -75,17 +73,18 @@ int			ft_strcount(char const *s, char c);
 char		**ft_freenavalniy(char **res, int elem);
 
 //	join.c	//
-int			join(t_struct *gen);
+int			join(t_all *all, t_struct *gen);
 
 //	main.c	//
 void		free_data(t_struct *gen);
 int			count_dblstr(t_struct *gen, int argc, char **argv);
-int			parse_cmdline(t_struct	*gen, int argc, char **argv);
 int			memory_allocate(t_all	**all, t_struct	*gen);
+int			parse_cmdline(t_struct	*gen, int argc, char **argv);
 int			main(int argc, char **argv);
 
 //	mutex.c	//
 int			init_mutex(t_struct	*gen);
+int			destroy_mutex(t_all *all, t_struct *gen);
 
 //	states.c	//
 void		think(t_all *new, struct timeval *start);
@@ -95,13 +94,13 @@ int			must_eat(t_all *new, int count);
 void		rest(t_all *new, struct timeval *start);
 
 //	threads.c	//
-void		*routine(void);
+void		*routine(void *all);
 int			create_threads(t_all *all, t_struct	*gen);
 int			others(t_struct	*gen);
 
 //	time.c	//
 long		get_time(void);
-long		cur_time(struct timeval *start);
+long		current(struct timeval *start);
 
 //	utils.c	//
 long int	ft_atoi(const char *str);

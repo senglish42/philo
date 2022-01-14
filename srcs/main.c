@@ -6,7 +6,7 @@
 /*   By: senglish <senglish@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 11:53:41 by senglish          #+#    #+#             */
-/*   Updated: 2022/01/14 11:53:41 by senglish         ###   ########.fr       */
+/*   Updated: 2022/01/14 21:03:35 by senglish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -49,6 +49,23 @@ int	count_dblstr(t_struct *gen, int argc, char **argv)
 	return (a);
 }
 
+int	memory_allocate(t_all	**all, t_struct	*gen)
+{
+	t_all		*philo;
+
+	philo = malloc(sizeof(t_all) * gen->arr[0]);
+	if (!philo)
+		return (error(gen, "Error: memory cannot be allocated\n", 3));
+	gen->state = malloc(sizeof(int *) * gen->arr[0]);
+	if (!gen->state)
+		return (error(gen, "Error: memory cannot be allocated\n", 4));
+	gen->forks = malloc(sizeof(pthread_mutex_t) * gen->arr[0]);
+	if (!gen->forks)
+		return (error(gen, "Error: memory cannot be allocated\n", 5));
+	*all = philo;
+	return (0);
+}
+
 int	parse_cmdline(t_struct *gen, int argc, char **argv)
 {
 	int			a;
@@ -57,6 +74,7 @@ int	parse_cmdline(t_struct *gen, int argc, char **argv)
 	gen->errno = 0;
 	gen->flag = 0;
 	gen->eatcnt = 0;
+	gen->dead = 0;
 	a = count_dblstr(gen, argc, argv);
 	if ((argc == 2 && (a != 4 && a != 5)) || ((argc != 5 && argc != 6) && !a))
 		return (error(gen, "Error: invalid amount of argc\n", 1));
@@ -69,23 +87,6 @@ int	parse_cmdline(t_struct *gen, int argc, char **argv)
 		if (gen->flag && gen->flag - 1 == b)
 			free_data(gen);
 	}
-	return (0);
-}
-
-int	memory_allocate(t_all	**all, t_struct	*gen)
-{
-	t_all		*philo;
-
-	philo = malloc(sizeof(t_all) * gen->arr[0]);
-	if (!philo)
-		return (error(gen, "Error: memory cannot be allocated\n", 7));
-	gen->state = malloc(sizeof(int *) * gen->arr[0]);
-	if (!gen->state)
-		return (error(gen, "Error: memory cannot be allocated\n", 9));
-	gen->forks = malloc(sizeof(pthread_mutex_t) * gen->arr[0]);
-	if (!gen->forks)
-		return (error(gen, "Error: memory cannot be allocated\n", 6));
-	*all = philo;
 	return (0);
 }
 
@@ -103,7 +104,9 @@ int	main(int argc, char **argv)
 		return (gen.errno);
 	if (create_threads(philo, &gen))
 		return (gen.errno);
-	if (join(&gen))
+	if (join(philo, &gen))
+		return (gen.errno);
+	if (destroy_mutex(philo, &gen))
 		return (gen.errno);
 	free(philo);
 	free(gen.state);

@@ -6,7 +6,7 @@
 /*   By: senglish <senglish@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 11:53:59 by senglish          #+#    #+#             */
-/*   Updated: 2022/01/14 19:39:50 by senglish         ###   ########.fr       */
+/*   Updated: 2022/01/14 19:39:54 by senglish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -22,7 +22,7 @@ long	get_time(void)
 	return (milliseconds);
 }
 
-long	cur_time(struct timeval *start)
+long	current(struct timeval *start)
 {
 	struct timeval	finish;
 	long			cur;
