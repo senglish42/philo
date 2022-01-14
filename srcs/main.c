@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "philo.h"
 
-void free_data(t_struct *gen)
+void	free_data(t_struct *gen)
 {
 	int	a;
 
@@ -49,7 +49,7 @@ int	count_dblstr(t_struct *gen, int argc, char **argv)
 	return (a);
 }
 
-int parse_cmdline(t_struct *gen, int argc, char **argv)
+int	parse_cmdline(t_struct *gen, int argc, char **argv)
 {
 	int			a;
 	int			b;
@@ -72,7 +72,7 @@ int parse_cmdline(t_struct *gen, int argc, char **argv)
 	return (0);
 }
 
-int memory_allocate(t_all	**all, t_struct	*gen)
+int	memory_allocate(t_all	**all, t_struct	*gen)
 {
 	t_all		*philo;
 
@@ -89,7 +89,7 @@ int memory_allocate(t_all	**all, t_struct	*gen)
 	return (0);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_all		*philo;
 	t_struct	gen;

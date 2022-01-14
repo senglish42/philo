@@ -6,15 +6,15 @@
 /*   By: senglish <senglish@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 11:53:59 by senglish          #+#    #+#             */
-/*   Updated: 2022/01/14 11:53:59 by senglish         ###   ########.fr       */
+/*   Updated: 2022/01/14 19:39:50 by senglish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
 
-long    get_time(void)
+long	get_time(void)
 {
-	struct timeval  tp;
-	long            milliseconds;
+	struct timeval	tp;
+	long			milliseconds;
 
 	gettimeofday(&tp, NULL);
 	milliseconds = tp.tv_sec * 1000;
@@ -22,12 +22,13 @@ long    get_time(void)
 	return (milliseconds);
 }
 
-long    cur_time(struct timeval *start)
+long	cur_time(struct timeval *start)
 {
 	struct timeval	finish;
-	long 			cur;
+	long			cur;
 
 	gettimeofday(&finish, NULL);
-	cur = (finish.tv_sec * 1e6 + finish.tv_usec) - (start->tv_sec * 1e6 + start->tv_usec);
+	cur = (finish.tv_sec * 1e6 + finish.tv_usec)
+		- (start->tv_sec * 1e6 + start->tv_usec);
 	return (cur);
 }

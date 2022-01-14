@@ -6,7 +6,7 @@
 /*   By: senglish <senglish@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 11:53:32 by senglish          #+#    #+#             */
-/*   Updated: 2022/01/14 11:53:32 by senglish         ###   ########.fr       */
+/*   Updated: 2022/01/14 19:33:33 by senglish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -60,7 +60,7 @@ char	**ft_fillarray(char **res, char const *s, char c)
 		if (*(s + d) != c)
 		{
 			res[elem] = (char *)malloc(sizeof(char)
-									   * ft_strcount(s + d, c) + 1);
+					* ft_strcount(s + d, c) + 1);
 			if (!res[elem])
 				return (ft_freenavalniy(res, elem));
 			ft_strlcpy(res[elem++], &s[d], ft_strcount(s + d, c) + 1);

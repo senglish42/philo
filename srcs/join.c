@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "philo.h"
 
-int join(t_struct	*gen)
+int	join(t_struct	*gen)
 {
 	if (pthread_join(gen->death, NULL) != 0)
 		return (error(gen, "Error: cannot join thread\n", 4));

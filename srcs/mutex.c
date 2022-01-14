@@ -6,14 +6,14 @@
 /*   By: senglish <senglish@student.21-school.ru>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/14 11:53:44 by senglish          #+#    #+#             */
-/*   Updated: 2022/01/14 11:53:44 by senglish         ###   ########.fr       */
+/*   Updated: 2022/01/14 13:11:03 by senglish         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
 
-int init_mutex(t_struct	*gen)
+int	init_mutex(t_struct	*gen)
 {
-	int count;
+	int	count;
 
 	count = -1;
 	while (++count < gen->arr[0])
